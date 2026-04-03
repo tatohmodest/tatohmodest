@@ -100,7 +100,7 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
   border-color:var(--border);
 }
 .nav-logo{
-  display:flex;align-items:center;
+  display:flex;align-items:center;font-weight:700;
 }
 .nav-logo-img{
   height:36px;
@@ -307,6 +307,7 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
 .ticker-wrap{
   overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
   padding:14px 0;background:var(--surface);
+  contain:layout paint;
 }
 .ticker{
   display:flex;gap:2.5rem;width:max-content;
@@ -646,32 +647,29 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
 }
 
 /* Hide custom cursor on touch-only devices */
-/* Also kill ALL transform-based animations that can trigger browser zoom/reflow */
 @media(hover:none){
   .cursor,.cursor-follower{display:none!important}
   body{cursor:auto;overflow-x:hidden}
   button{cursor:pointer}
 
-  /* Kill every looping transform animation on mobile */
-  .stat-pill,
-  .blink-dot,
-  .scroll-arrow,
-  .ticker,
-  .orbit-ring,
-  .photo-reveal-overlay{
-    animation:none!important;
-    transition:none!important;
-  }
-
-  /* Lock stat pills — they bleed outside their container */
+  /* Stat pills — bleed outside at left:-70px / right:-60px */
   .stat-pill{display:none!important}
 
-  /* Prevent any element from painting outside its box */
-  .hero-right{overflow:hidden}
-  .hero-inner{overflow:hidden}
-  #hero{overflow:hidden}
+  /* Orbit rings: rotate + translate combo on wide circles */
+  .orbit-ring{animation:none!important}
 
-  /* Reveal elements: skip translateY so nothing sticks below fold */
+  /* Scroll arrow: scaleY inside hero, killed as precaution */
+  .scroll-arrow{animation:none!important}
+
+  /* Hard-contain every section that has animated children */
+  #hero{overflow:hidden;contain:paint}
+  .hero-inner{overflow:hidden}
+  .hero-right{overflow:hidden}
+  .orbit-scene{overflow:hidden;contain:paint}
+  .ticker-wrap{contain:layout paint}
+  .impact-section{contain:paint}
+
+  /* Reveal: opacity only — no translateY ever */
   .reveal{
     opacity:0;
     transform:none;

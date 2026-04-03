@@ -88,70 +88,82 @@ if (window.matchMedia('(hover: hover)').matches) {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let W, H, drops = [];
+  let W, H, particles = [];
 
-  // Slight diagonal angle for natural rain look
-  const ANGLE = 0.18; // radians ~10°
-
-  function mkDrop(spreadY) {
-    const speed  = Math.random() * 3.2 + 0.9;
-    const length = Math.random() * 32 + 10;
+  function mkParticle(spreadY) {
+    const radius  = Math.random() * 1.4 + 0.3;
+    const speed   = Math.random() * 0.7 + 0.25;  // gentle but visible fall
+    const twinkleSpeed = Math.random() * 0.012 + 0.004;
     return {
       x:       Math.random() * (W || 1400),
-      y:       spreadY ? Math.random() * (H || 900) : -(Math.random() * 300 + length),
+      y:       spreadY ? Math.random() * (H || 900) : -(Math.random() * 200 + 10),
+      radius,
       speed,
-      length,
-      opacity: Math.random() * 0.20 + 0.04,
-      width:   Math.random() * 0.65 + 0.2,
-      // Each drop drifts at the shared angle + tiny individual variance
-      dx:      Math.sin(ANGLE) * speed + (Math.random() - 0.5) * 0.15,
-      dy:      Math.cos(ANGLE) * speed
+      dx:      (Math.random() - 0.5) * 0.18,      // gentle side drift
+      dy:      speed,
+      opacity: Math.random() * 0.30 + 0.08,
+      // twinkling
+      phase:   Math.random() * Math.PI * 2,
+      twinkleSpeed,
+      // some particles get a soft glow halo
+      glow:    Math.random() < 0.35
     };
   }
 
   function resize() {
     W = canvas.width  = canvas.offsetWidth;
     H = canvas.height = canvas.offsetHeight;
-    drops = [];
-    for (let i = 0; i < 160; i++) drops.push(mkDrop(true));
+    particles = [];
+    for (let i = 0; i < 200; i++) particles.push(mkParticle(true));
   }
-  resize();
-  let _rainResizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(_rainResizeTimer);
-    _rainResizeTimer = setTimeout(resize, 200);
-  }, { passive: true });
+  // Defer first resize so canvas has layout dimensions on mobile
+  requestAnimationFrame(() => requestAnimationFrame(resize));
+  if (window.matchMedia('(hover: hover)').matches) {
+    let _resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(resize, 200);
+    }, { passive: true });
+  } else {
+    window.addEventListener('orientationchange', () => setTimeout(resize, 400), { passive: true });
+  }
 
+  let _tick = 0;
   function draw() {
+    _tick++;
     ctx.clearRect(0, 0, W, H);
 
-    drops.forEach(d => {
-      // Compute tail (fading end) from direction vector
-      const tailX = d.x - (d.dx / d.speed) * d.length;
-      const tailY = d.y - (d.dy / d.speed) * d.length;
+    particles.forEach(p => {
+      // Twinkling: oscillate opacity smoothly
+      const pulse = Math.sin(p.phase + _tick * p.twinkleSpeed);
+      const alpha = p.opacity + pulse * 0.12;
 
-      const grad = ctx.createLinearGradient(tailX, tailY, d.x, d.y);
-      grad.addColorStop(0, `rgba(0,208,132,0)`);
-      grad.addColorStop(0.6, `rgba(0,208,132,${d.opacity * 0.55})`);
-      grad.addColorStop(1, `rgba(0,208,132,${d.opacity})`);
+      if (p.glow) {
+        // Soft radial glow behind the dot
+        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 5);
+        grd.addColorStop(0,   `rgba(255,255,255,${alpha * 0.45})`);
+        grd.addColorStop(1,   `rgba(255,255,255,0)`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius * 5, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      }
 
+      // Core dot
       ctx.beginPath();
-      ctx.moveTo(tailX, tailY);
-      ctx.lineTo(d.x, d.y);
-      ctx.strokeStyle = grad;
-      ctx.lineWidth   = d.width;
-      ctx.lineCap     = 'round';
-      ctx.stroke();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${Math.min(alpha, 0.75)})`;
+      ctx.fill();
 
-      // Advance position
-      d.x += d.dx;
-      d.y += d.dy;
+      // Advance
+      p.x += p.dx;
+      p.y += p.dy;
 
-      // Reset once off the bottom or sides
-      if (d.y - d.length > H + 20 || d.x > W + 80 || d.x < -80) {
-        const newDrop = mkDrop(false);
-        newDrop.x = Math.random() * (W + 100) - 50;
-        Object.assign(d, newDrop);
+      // Reset when off screen
+      if (p.y > H + 20 || p.x < -20 || p.x > W + 20) {
+        const np = mkParticle(false);
+        np.x = Math.random() * W;
+        Object.assign(p, np);
       }
     });
 
