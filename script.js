@@ -1,308 +1,452 @@
-/* =============================================
-   TATAW MODEST — RESUME SITE · JS
-   ============================================= */
+/* ═══════════════════════════════════════
+   TATAW MODEST v3 — INTERACTIVE JS
+   Orbit wheel · Accordion · Magnetic · Canvas
+═══════════════════════════════════════ */
 
-// ---- HERO TITLE — CHAR SPLIT ----
-function splitHeroTitle() {
-  const h1 = document.querySelector('.hero-title');
-  if (!h1) return;
+// ── LOADER ──────────────────────────────
+(function () {
+  const loaderBar = document.getElementById('loaderBar');
+  const loaderPct = document.getElementById('loaderPct');
+  const loader    = document.getElementById('loader');
 
-  function esc(ch) {
-    return ch === '&' ? '&amp;' : ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch;
+  // Smooth RAF-based fill: eases to ~92% over FILL_MS, then snaps to 100%
+  const FILL_MS = 1500;
+  const startTs = performance.now();
+  let currentPct = 0;
+
+  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function tickLoader(now) {
+    const t      = Math.min((now - startTs) / FILL_MS, 1);
+    const target = easeOutQuart(t) * 92; // ease to 92%, never stalls
+    currentPct   = Math.max(currentPct, target);
+
+    loaderBar.style.width   = currentPct + '%';
+    loaderPct.textContent   = Math.round(currentPct) + '%';
+
+    if (t < 1) {
+      requestAnimationFrame(tickLoader);
+    } else {
+      // Snap to 100, pause, then dismiss
+      loaderBar.style.width = '100%';
+      loaderPct.textContent = '100%';
+      setTimeout(dismissLoader, 380);
+    }
   }
 
-  let idx = 0;
-  const lines = [];
+  function dismissLoader() {
+    loader.classList.add('done');
+    // Hero names slide up just as loader starts fading
+    document.querySelectorAll('.slide-up').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 140 + 80);
+    });
+    // Photo reveal overlay wipes after names are done
+    const overlay = document.querySelector('.photo-reveal-overlay');
+    if (overlay) setTimeout(() => overlay.classList.add('revealed'), 600);
+  }
 
-  h1.childNodes.forEach(node => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const text = node.textContent.trim();
-      if (!text) return;
-      const chars = [...text].map(c =>
-        `<span class="char" style="--i:${idx++}">${c === ' ' ? '&nbsp;' : esc(c)}</span>`
-      ).join('');
-      lines.push(`<span class="char-line">${chars}</span>`);
-    } else if (node.nodeName === 'EM') {
-      const chars = [...node.textContent].map(c =>
-        `<span class="char" style="--i:${idx++}">${esc(c)}</span>`
-      ).join('');
-      lines.push(`<span class="char-line"><em>${chars}</em></span>`);
-    } else if (node.nodeName === 'SPAN') {
-      const chars = [...node.textContent].map(c =>
-        `<span class="char" style="--i:${idx++}">${c === ' ' ? '&nbsp;' : esc(c)}</span>`
-      ).join('');
-      lines.push(`<span class="char-line"><span class="${node.className}">${chars}</span></span>`);
+  requestAnimationFrame(tickLoader);
+})();
+
+// ── HERO PHOTO — tap toggle for mobile ──
+(function() {
+  const frame = document.getElementById('heroPhotoFrame');
+  if (!frame) return;
+  let toggled = false;
+  frame.addEventListener('click', () => {
+    // Only meaningful on touch devices where :hover doesn't stick
+    if (window.matchMedia('(hover: none)').matches) {
+      toggled = !toggled;
+      frame.classList.toggle('revealed', toggled);
     }
   });
+})();
 
-  h1.innerHTML = lines.join('');
+// ── CUSTOM CURSOR ───────────────────────
+const cursor   = document.getElementById('cursor');
+const follower = document.getElementById('cursorFollower');
+let mx = window.innerWidth/2, my = window.innerHeight/2;
+let fx = mx, fy = my;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+  fx += (mx - fx) * 0.1;
+  fy += (my - fy) * 0.1;
+  follower.style.left = fx + 'px';
+  follower.style.top  = fy + 'px';
+  requestAnimationFrame(animateCursor);
 }
+animateCursor();
 
-// ---- STAT COUNT-UP ----
-function initCountUp() {
-  const counter = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const statNum = entry.target.querySelector('.stat-num');
-      if (!statNum || statNum.dataset.counted) return;
-      statNum.dataset.counted = 'true';
-      const textNode = Array.from(statNum.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-      if (!textNode) return;
-      const rawText = textNode.textContent.trim();
-      const target = parseFloat(rawText);
-      if (isNaN(target)) return;
-      const isDecimal = rawText.includes('.');
-      const duration = 1400;
-      const startTime = performance.now();
-      function tick(now) {
-        const p = Math.min((now - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        textNode.textContent = isDecimal ? (target * eased).toFixed(1) : Math.floor(target * eased);
-        if (p < 1) requestAnimationFrame(tick);
-        else textNode.textContent = rawText;
-      }
-      requestAnimationFrame(tick);
-      counter.unobserve(entry.target);
-    });
-  }, { threshold: 0.6 });
-  document.querySelectorAll('.reveal-stat').forEach(el => counter.observe(el));
-}
-
-// ---- LOADER ----
-window.addEventListener('load', () => {
-  splitHeroTitle();
-  const loader = document.getElementById('loader');
-  setTimeout(() => {
-    loader.classList.add('done');
-    // Hero text animations
-    document.querySelector('.hero-title')?.classList.add('chars-ready');
-    document.querySelector('.hero-label')?.classList.add('anim-in');
-    document.querySelector('.hero-bio')?.classList.add('anim-in');
-    document.querySelector('.hero-actions')?.classList.add('anim-in');
-    // Trigger hero stats
-    document.querySelectorAll('.reveal-stat').forEach(el => {
-      setTimeout(() => el.classList.add('visible'), 200 + parseFloat(getComputedStyle(el).getPropertyValue('--delay')) * 1000);
-    });
-
-    // Delay reveal observer init until loader is done so sections animate on real scroll
-    initScrollReveal();
-  }, 1600);
-});
-
-initCountUp();
-
-// ---- CANVAS STAR PARTICLES ----
-(function initStarCanvas() {
-  const canvas = document.getElementById('star-canvas');
+// ── HERO CANVAS — RAIN ──────────────────
+(function() {
+  const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  let W, H, drops = [];
 
-  let w, h;
+  // Slight diagonal angle for natural rain look
+  const ANGLE = 0.18; // radians ~10°
+
+  function mkDrop(spreadY) {
+    const speed  = Math.random() * 3.2 + 0.9;
+    const length = Math.random() * 32 + 10;
+    return {
+      x:       Math.random() * (W || 1400),
+      y:       spreadY ? Math.random() * (H || 900) : -(Math.random() * 300 + length),
+      speed,
+      length,
+      opacity: Math.random() * 0.20 + 0.04,
+      width:   Math.random() * 0.65 + 0.2,
+      // Each drop drifts at the shared angle + tiny individual variance
+      dx:      Math.sin(ANGLE) * speed + (Math.random() - 0.5) * 0.15,
+      dy:      Math.cos(ANGLE) * speed
+    };
+  }
 
   function resize() {
-    w = canvas.width  = window.innerWidth;
-    h = canvas.height = window.innerHeight;
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    drops = [];
+    for (let i = 0; i < 160; i++) drops.push(mkDrop(true));
   }
   resize();
   window.addEventListener('resize', resize, { passive: true });
 
-  // Build star pool — mix of tiny dots and rare slightly bigger ones
-  const COUNT = 140;
-  const stars = Array.from({ length: COUNT }, () => ({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    r: Math.random() > 0.82 ? 1.4 + Math.random() * 0.6 : 0.6 + Math.random() * 0.5,
-    speed: 0.12 + Math.random() * 0.28,       // base fall speed (very slow)
-    drift: (Math.random() - 0.5) * 0.07,       // subtle horizontal wobble
-    opacity: 0.08 + Math.random() * 0.45,
-    // give each star a slow fade-pulse offset so they feel alive
-    phase: Math.random() * Math.PI * 2,
-    pulseSpeed: 0.003 + Math.random() * 0.008,
-  }));
-
   function draw() {
-    ctx.clearRect(0, 0, w, h);
+    ctx.clearRect(0, 0, W, H);
 
-    const time = performance.now();
+    drops.forEach(d => {
+      // Compute tail (fading end) from direction vector
+      const tailX = d.x - (d.dx / d.speed) * d.length;
+      const tailY = d.y - (d.dy / d.speed) * d.length;
 
-    for (const s of stars) {
-      s.y += s.speed;
-      s.x += s.drift;
-
-      // Wrap vertically
-      if (s.y > h + 4) { s.y = -4;  s.x = Math.random() * w; }
-      if (s.y < -4)   { s.y = h + 4; }
-      // Wrap horizontally
-      if (s.x >  w + 4) s.x = -4;
-      if (s.x < -4)     s.x = w + 4;
-
-      // Gentle opacity pulse so stars twinkle without hard blinking
-      const pulse   = 0.5 + 0.5 * Math.sin(time * s.pulseSpeed + s.phase);
-      const opacity = s.opacity * (0.65 + 0.35 * pulse);
+      const grad = ctx.createLinearGradient(tailX, tailY, d.x, d.y);
+      grad.addColorStop(0, `rgba(0,208,132,0)`);
+      grad.addColorStop(0.6, `rgba(0,208,132,${d.opacity * 0.55})`);
+      grad.addColorStop(1, `rgba(0,208,132,${d.opacity})`);
 
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(232, 230, 226, ${opacity})`;
-      ctx.fill();
-    }
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(d.x, d.y);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth   = d.width;
+      ctx.lineCap     = 'round';
+      ctx.stroke();
+
+      // Advance position
+      d.x += d.dx;
+      d.y += d.dy;
+
+      // Reset once off the bottom or sides
+      if (d.y - d.length > H + 20 || d.x > W + 80 || d.x < -80) {
+        const newDrop = mkDrop(false);
+        newDrop.x = Math.random() * (W + 100) - 50;
+        Object.assign(d, newDrop);
+      }
+    });
 
     requestAnimationFrame(draw);
   }
-
   draw();
 })();
 
-// ---- RIGHT-SIDE DOT NAVIGATION ----
-(function initDotNav() {
-  const SECTIONS = [
-    { id: 'home',       label: 'Home' },
-    { id: 'experience', label: 'Experience' },
-    { id: 'projects',   label: 'Projects' },
-    { id: 'skills',     label: 'Stack' },
-    { id: 'about',      label: 'Background' },
-    { id: 'contact',    label: 'Contact' },
-  ];
-
-  const wrap = document.createElement('nav');
-  wrap.className = 'dot-nav';
-  wrap.setAttribute('aria-label', 'Section navigation');
-
-  SECTIONS.forEach(({ id, label }) => {
-    const a = document.createElement('a');
-    a.href = '#' + id;
-    a.className = 'dot-nav-item';
-    a.setAttribute('aria-label', label);
-    a.dataset.id = id;
-    a.innerHTML = `<span class="dot-nav-dot"></span><span class="dot-nav-label">${label}</span>`;
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    });
-    wrap.appendChild(a);
-  });
-
-  document.body.appendChild(wrap);
-
-  const sectionEls = SECTIONS
-    .map(({ id }) => ({ id, el: document.getElementById(id) }))
-    .filter(item => item.el);
-
-  function getActiveSectionId() {
-    const probe = window.scrollY + window.innerHeight * 0.38;
-    let fallback = sectionEls[0]?.id;
-
-    for (const { id, el } of sectionEls) {
-      const top = el.offsetTop;
-      const bottom = top + el.offsetHeight;
-      if (probe >= top && probe < bottom) return id;
-      if (probe >= top) fallback = id;
-    }
-
-    return fallback;
-  }
-
-  function paintActiveSection(id) {
-    wrap.querySelectorAll('.dot-nav-item').forEach(a => {
-      a.classList.toggle('active', a.dataset.id === id);
-    });
-
-    document.querySelectorAll('.nav-menu a[href^="#"]').forEach(a => a.style.color = '');
-    const navActive = document.querySelector(`.nav-menu a[href="#${id}"]`);
-    if (navActive) navActive.style.color = 'var(--text)';
-  }
-
-  function updateActiveSection() {
-    const activeId = getActiveSectionId();
-    if (activeId) paintActiveSection(activeId);
-  }
-
-  updateActiveSection();
-  window.addEventListener('scroll', updateActiveSection, { passive: true });
-  window.addEventListener('resize', updateActiveSection);
-})();
-
-// ---- SCROLL DIM (fade sections that leave the viewport) ----
-(function initScrollDim() {
-  const visited = new Set();
-
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const el = entry.target;
-      if (entry.isIntersecting) {
-        visited.add(el);
-        el.classList.remove('dim-exit');
-      } else if (visited.has(el)) {
-        // Only dim sections the user has already scrolled through
-        el.classList.add('dim-exit');
-      }
-    });
-  }, { threshold: 0.06 });
-
-  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
-})();
-
-// ---- SCROLL PROGRESS BAR ----
+// ── NAV ─────────────────────────────────
+const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
-  const scrollTop = window.scrollY;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = (scrollTop / docHeight) * 100;
-  document.getElementById('scrollBar').style.height = pct + '%';
-
-  // Nav scrolled state
-  const nav = document.querySelector('.nav');
-  nav.classList.toggle('scrolled', scrollTop > 60);
+  nav.classList.toggle('scrolled', window.scrollY > 60);
 }, { passive: true });
 
-// ---- NAV HAMBURGER ----
-const navToggle = document.getElementById('navToggle');
-const navMenu = document.getElementById('navMenu');
-navToggle.addEventListener('click', () => {
-  const open = navMenu.classList.toggle('open');
-  navToggle.setAttribute('aria-expanded', open);
+const burger  = document.getElementById('navBurger');
+const mobMenu = document.getElementById('mobMenu');
+burger.addEventListener('click', () => {
+  const open = mobMenu.classList.toggle('open');
+  burger.setAttribute('aria-expanded', open);
+  const [s1, s2] = burger.querySelectorAll('span');
+  s1.style.transform = open ? 'translateY(6px) rotate(45deg)' : '';
+  s2.style.transform = open ? 'translateY(-6px) rotate(-45deg)' : '';
 });
-navMenu.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => {
-    navMenu.classList.remove('open');
-    navToggle.setAttribute('aria-expanded', 'false');
+mobMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mobMenu.classList.remove('open');
+  const [s1, s2] = burger.querySelectorAll('span');
+  s1.style.transform = ''; s2.style.transform = '';
+}));
+
+// ── MAGNETIC ELEMENTS ───────────────────
+document.querySelectorAll('.magnetic').forEach(el => {
+  const strength = parseInt(el.dataset.strength || 30);
+  el.addEventListener('mousemove', e => {
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width  / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    el.style.transform = `translate(${dx * strength * 0.4}px, ${dy * strength * 0.4}px)`;
   });
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; });
 });
-const navClose = document.getElementById('navClose');
-if (navClose) {
-  navClose.addEventListener('click', () => {
-    navMenu.classList.remove('open');
-    navToggle.setAttribute('aria-expanded', 'false');
+
+// ── TILT CARDS ──────────────────────────
+document.querySelectorAll('[data-tilt]').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 12;
+    const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 12;
+    el.style.transform = `perspective(600px) rotateY(${x}deg) rotateX(${-y}deg) translateZ(6px)`;
   });
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+});
+
+// ── ORBIT SKILL WHEEL ───────────────────
+(function() {
+  const scene  = document.querySelector('.orbit-scene');
+  if (!scene) return;
+  const nodes  = Array.from(scene.querySelectorAll('.skill-node'));
+  const tooltip = document.getElementById('skillTooltip');
+  const stName  = document.getElementById('stName');
+  const stDesc  = document.getElementById('stDesc');
+  const pts = [];
+  const n = nodes.length;
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  let rotY = 0;
+  let rotX = -0.18;
+  let speedY = 0.0065;
+  let speedX = 0.0018;
+  let isDragging = false;
+  let lastX = 0;
+  let lastY = 0;
+  let hoveredNode = null;
+  let radius = 170;
+  let cx = 0;
+  let cy = 0;
+
+  for (let i = 0; i < n; i++) {
+    const y = 1 - (i / Math.max(1, n - 1)) * 2;
+    const rr = Math.sqrt(Math.max(0, 1 - y * y));
+    const t = golden * i;
+    pts.push({ x: Math.cos(t) * rr, y, z: Math.sin(t) * rr });
+  }
+
+  function recalc() {
+    const w = scene.clientWidth;
+    const h = scene.clientHeight;
+    radius = Math.min(w, h) * 0.36;
+    cx = w * 0.5;
+    cy = h * 0.5;
+  }
+
+  function rotatePoint(p, ax, ay) {
+    const cosY = Math.cos(ay);
+    const sinY = Math.sin(ay);
+    let x = p.x * cosY - p.z * sinY;
+    let z = p.x * sinY + p.z * cosY;
+
+    const cosX = Math.cos(ax);
+    const sinX = Math.sin(ax);
+    const y = p.y * cosX - z * sinX;
+    z = p.y * sinX + z * cosX;
+
+    return { x, y, z };
+  }
+
+  function placeTooltip(node) {
+    if (!node) return;
+    const rect = node.getBoundingClientRect();
+    const ttRect = tooltip.getBoundingClientRect();
+    let left = rect.right + 14;
+    let top = rect.top + rect.height * 0.5 - ttRect.height * 0.5;
+
+    if (left + ttRect.width > window.innerWidth - 10) {
+      left = rect.left - ttRect.width - 14;
+    }
+    if (left < 10) left = 10;
+    if (top < 10) top = 10;
+    if (top + ttRect.height > window.innerHeight - 10) {
+      top = window.innerHeight - ttRect.height - 10;
+    }
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+  }
+
+  function render() {
+    if (!isDragging) {
+      rotY += speedY;
+      rotX += speedX;
+      speedY *= 0.996;
+      speedX *= 0.996;
+      if (Math.abs(speedY) < 0.002) speedY = 0.002;
+      if (Math.abs(speedX) < 0.0007) speedX = 0.0007;
+    }
+
+    nodes.forEach((node, i) => {
+      const p = rotatePoint(pts[i], rotX, rotY);
+      const depth = (p.z + 1) * 0.5;
+      const scale = 0.58 + depth * 0.72;
+      const x = cx + p.x * radius * 1.18;
+      const y = cy + p.y * radius * 1.18;
+
+      node.style.left = `${x}px`;
+      node.style.top = `${y}px`;
+      node.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      node.style.opacity = `${0.4 + depth * 0.7}`;
+      node.style.zIndex = `${Math.round(30 + depth * 70)}`;
+    });
+
+    if (hoveredNode && tooltip.classList.contains('visible')) {
+      placeTooltip(hoveredNode);
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  recalc();
+  render();
+  window.addEventListener('resize', recalc, { passive: true });
+
+  scene.addEventListener('mousedown', e => {
+    isDragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    scene.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    rotY += dx * 0.008;
+    rotX += dy * 0.006;
+    speedY = dx * 0.00075;
+    speedX = dy * 0.00055;
+    lastX = e.clientX;
+    lastY = e.clientY;
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    scene.style.cursor = 'grab';
+  });
+
+  scene.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    isDragging = true;
+    lastX = t.clientX;
+    lastY = t.clientY;
+  }, { passive: true });
+
+  scene.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const t = e.touches[0];
+    const dx = t.clientX - lastX;
+    const dy = t.clientY - lastY;
+    rotY += dx * 0.008;
+    rotX += dy * 0.006;
+    speedY = dx * 0.00075;
+    speedX = dy * 0.00055;
+    lastX = t.clientX;
+    lastY = t.clientY;
+  }, { passive: true });
+
+  scene.addEventListener('touchend', () => {
+    isDragging = false;
+  }, { passive: true });
+
+  nodes.forEach(node => {
+    node.addEventListener('mouseenter', () => {
+      nodes.forEach(nod => nod.classList.remove('active'));
+      node.classList.add('active');
+      hoveredNode = node;
+      stName.textContent = node.dataset.skill || 'Skill';
+      stDesc.textContent = node.dataset.desc || '';
+      tooltip.classList.add('visible');
+      placeTooltip(node);
+    });
+
+    node.addEventListener('mouseleave', () => {
+      node.classList.remove('active');
+      hoveredNode = null;
+      tooltip.classList.remove('visible');
+    });
+
+    node.addEventListener('click', () => {
+      hoveredNode = node;
+      stName.textContent = node.dataset.skill || 'Skill';
+      stDesc.textContent = node.dataset.desc || '';
+      tooltip.classList.add('visible');
+      placeTooltip(node);
+      setTimeout(() => {
+        if (!node.matches(':hover')) {
+          tooltip.classList.remove('visible');
+        }
+      }, 2600);
+    });
+  });
+})();
+
+// ── ACCORDION ───────────────────────────
+document.querySelectorAll('.acc-item').forEach(item => {
+  const trigger = item.querySelector('.acc-trigger');
+  trigger.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.acc-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+  // Open first by default
+  if (item.dataset.index === '0') item.classList.add('open');
+});
+
+// ── SCROLL REVEAL ───────────────────────
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('visible');
+    revealObs.unobserve(e.target);
+    // Counter
+    const counter = e.target.querySelector('.counter');
+    if (counter) animateCounter(counter);
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// Stagger children
+document.querySelectorAll('.acard').forEach((el, i) => el.style.setProperty('--rd', `${i*0.08}s`));
+document.querySelectorAll('.proj-card').forEach((el, i) => el.style.setProperty('--rd', `${i*0.07}s`));
+document.querySelectorAll('.impact-label-item').forEach((el, i) => el.style.setProperty('--rd', `${i*0.1}s`));
+
+// ── COUNTER ANIMATION ───────────────────
+function animateCounter(el) {
+  const target  = parseFloat(el.dataset.target);
+  const suffix  = el.dataset.suffix || '';
+  const dur     = 1600;
+  const start   = performance.now();
+  const isFloat = el.dataset.target.includes('.');
+
+  function tick(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(2, -10 * t);
+    const val  = ease * target;
+    el.textContent = (isFloat ? val.toFixed(1) : Math.round(val)) + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+    else el.textContent = (isFloat ? target.toFixed(1) : target) + suffix;
+  }
+  requestAnimationFrame(tick);
 }
 
-// ---- INTERSECTION OBSERVER — SCROLL REVEAL ----
-let revealReady = false;
-function initScrollReveal() {
-  if (revealReady) return;
-  revealReady = true;
-
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.18,
-    rootMargin: '0px 0px -18% 0px'
+// ── ACTIVE NAV HIGHLIGHT ────────────────
+const sections  = document.querySelectorAll('section[id]');
+const navLinks  = document.querySelectorAll('.nav-links a');
+const sectionObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.style.color = '');
+      const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (active) active.style.color = 'var(--text)';
+    }
   });
-
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-  // Stagger by local group, not full-page index, for cleaner section entrances
-  ['.exp-list .exp-item', '.projects-list .project-item', '.about-grid .about-card', '.skills-grid .skill-category'].forEach(selector => {
-    document.querySelectorAll(selector).forEach((el, i) => {
-      el.style.transitionDelay = `${i * 0.07}s`;
-    });
-  });
-}
-
-// ---- HERO STAT VISIBILITY (fallback for slow load) ----
-setTimeout(() => {
-  document.querySelectorAll('.reveal-stat').forEach(el => el.classList.add('visible'));
-}, 2500);
+}, { threshold: 0.4 });
+sections.forEach(s => sectionObs.observe(s));

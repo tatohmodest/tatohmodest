@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tatoh Modest Wilton — Full-Stack Engineer & Founder</title>
+  <meta name="description" content="Full-stack engineer & founder. 4+ years building scalable SaaS, LMS, APIs. Open to contracts." />
+  <meta property="og:title" content="Tatoh Modest Wilton — Full-Stack Engineer" />
+  <meta property="og:description" content="Founder of Looping Binary. Building the future from Cameroon." />
+  <meta property="og:type" content="website" />
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="style-new.css" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════ CUSTOM CURSOR ════════════════════════════════════ -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ════════════════════════════════════ GRAIN OVERLAY ════════════════════════════════════ -->
+<div class="grain-overlay"></div>
+
+<!-- ════════════════════════════════════ STAR CANVAS ════════════════════════════════════ -->
+<canvas id="star-canvas" aria-hidden="true"></canvas>
+
+<!-- ════════════════════════════════════ SCROLL PROGRESS ════════════════════════════════════ -->
+<div class="scroll-bar">
+  <div class="scroll-bar-fill" id="scrollBarFill"></div>
+</div>
+
+<!-- ════════════════════════════════════ SIDE LINK ════════════════════════════════════ -->
+<div class="side-email" aria-hidden="true">
+  <a href="https://loopingbinary.com" target="_blank" rel="noopener">loopingbinary.com</a>
+</div>
+
+<!-- ════════════════════════════════════ NAV ════════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Primary navigation">
+  <a href="#" class="nav-logo" aria-label="Home">
+    <img src="logo.png" alt="Tatoh Modest logo" />
+  </a>
+  <button class="nav-hamburger" id="navToggle" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-menu" id="navMenu" role="menu">
+    <button class="nav-close" id="navClose" aria-label="Close menu">&times;</button>
+    <a href="#experience" role="menuitem">Experience</a>
+    <a href="#projects" role="menuitem">Projects</a>
+    <a href="#skills" role="menuitem">Skills</a>
+    <a href="tatoh_modest_resume.html" role="menuitem">Resume</a>
+    <a href="#contact" role="menuitem">Contact</a>
+    <a href="mailto:tatohmodest@gmail.com" class="nav-cta" role="menuitem">Hire Me</a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════ LOADER ════════════════════════════════════ -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-text">
+    <span id="loader-name">TATOH<span class="loader-accent">.</span></span>
+  </div>
+  <div class="loader-bar">
+    <div class="loader-bar-fill"></div>
+  </div>
+  <p class="loader-tagline">Building the future from Cameroon 🚀</p>
+</div>
+
+<!-- ════════════════════════════════════ HERO ════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg-text">TATOH</div>
+  
+  <div class="hero-inner">
+    <div class="hero-eyebrow reveal">
+      <span class="hero-eyebrow-dot"></span>
+      Available for contracts & collaborations
+    </div>
+
+    <h1 class="hero-title">
+      FULL-STACK<br/>
+      <em>ENGINEER</em><br/>
+      <span class="hero-title-sub">&amp; FOUNDER</span>
+    </h1>
+
+    <div class="hero-bottom reveal">
+      <div>
+        <p class="hero-bio">
+          Full-stack engineer and tech entrepreneur with <strong>4+ years professional experience</strong> (7+ years overall). 
+          Founder of <strong>Looping Binary</strong> — building scalable SaaS, LMS, APIs, and creator platforms. 
+          Educator at 4 institutions. International client base. Bilingual.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Hire Me</a>
+          <a href="#projects" class="btn-ghost">View Work</a>
+          <a href="tatoh_modest_resume.html" class="btn-ghost">Resume</a>
+        </div>
+      </div>
+
+      <div class="hero-stats-row">
+        <div class="hero-stat reveal-stat" style="--delay:0.1s">
+          <span class="stat-num">4<span class="stat-plus">+</span></span>
+          <span class="stat-label">Years Pro</span>
+        </div>
+        <div class="hero-stat reveal-stat" style="--delay:0.2s">
+          <span class="stat-num">12<span class="stat-plus">+</span></span>
+          <span class="stat-label">Projects</span>
+        </div>
+        <div class="hero-stat reveal-stat" style="--delay:0.3s">
+          <span class="stat-num">85<span class="stat-plus">+</span></span>
+          <span class="stat-label">Repos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint" aria-hidden="true">
+    <span>Scroll</span>
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><rect x="1" y="1" width="14" height="22" rx="7" stroke="var(--accent)" stroke-width="1.5"/><circle cx="8" cy="7" r="2" fill="var(--accent)"><animate attributeName="cy" values="7;15;7" dur="1.8s" repeatCount="indefinite"/></circle></svg>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════ EXPERIENCE (ACCORDION) ════════════════════════════════════ -->
+<section class="section" id="experience">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-eyebrow">MY JOURNEY</div>
+      <h2 class="section-title">Professional Experience</h2>
+    </div>
+    <div class="section-count">04</div>
+  </div>
+
+  <div class="exp-accordion">
+    
+    <div class="acc-item reveal">
+      <button class="acc-header" aria-expanded="false">
+        <div class="acc-meta">
+          <span class="acc-company">Looping Binary · CEO & Founder</span>
+          <span class="acc-date">2023 – Present</span>
+        </div>
+        <span class="acc-toggle">+</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Founded and lead a software company</strong> building scalable SaaS, e-commerce, LMS, and developer tooling for local and international clients.</p>
+        <ul class="acc-bullets">
+          <li>Architected the full Looping Binary ecosystem: centralized auth, coin/rewards API, Junior Dev tournament, Intellex LMS, LB Tech Shop, internship portal</li>
+          <li>Designed end-to-end SEO pipelines (Next.js generateMetadata, JSON-LD, sitemap.ts, GSC) with bilingual content strategies</li>
+          <li>Launched 6-discipline internship tracks: Software Dev, UI/UX, Data & AI, Digital Marketing, Business, Content Creation</li>
+          <li>Grew Intellex from a 600+ member WhatsApp community into a structured LMS with subscription tiers</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc-item reveal">
+      <button class="acc-header" aria-expanded="false">
+        <div class="acc-meta">
+          <span class="acc-company">SG Superfans · Lead Backend Developer</span>
+          <span class="acc-date">Contract</span>
+        </div>
+        <span class="acc-toggle">+</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Led backend engineering</strong> for an international creator/fan monetization platform with live streaming and real-time communications.</p>
+        <ul class="acc-bullets">
+          <li>Architected real-time video/audio calling negotiation flows using WebRTC and Agora SDK</li>
+          <li>Built scalable REST APIs and WebSocket infrastructure for real-time notifications and feed systems</li>
+          <li>Integrated three payment gateways — PayUnit, Stripe, and PayPal — for subscriptions and PPV content</li>
+          <li>Designed creator monetization systems: subscription tiers, exclusive content gating, and tip mechanics</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc-item reveal">
+      <button class="acc-header" aria-expanded="false">
+        <div class="acc-meta">
+          <span class="acc-company">Presto · Lead Backend Developer</span>
+          <span class="acc-date">Contract</span>
+        </div>
+        <span class="acc-toggle">+</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Led backend architecture</strong> for a multi-feature business management platform serving SMEs.</p>
+        <ul class="acc-bullets">
+          <li>Built business onboarding, product/service catalogue, and client account management APIs</li>
+          <li>Developed event scheduling system with booking management, staff assignments, and reminders</li>
+          <li>Implemented staff management with role-based access controls and permission scoping</li>
+          <li>Designed REST APIs consumed by a Flutter mobile app frontend</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc-item reveal">
+      <button class="acc-header" aria-expanded="false">
+        <div class="acc-meta">
+          <span class="acc-company">Multiple Institutions · Educator & Instructor</span>
+          <span class="acc-date">2023 – Present</span>
+        </div>
+        <span class="acc-toggle">+</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Teaching at 4 institutions</strong> across Cameroon: Seven Advanced Academy, Seven International University, Brains University, Saint Monica University.</p>
+        <ul class="acc-bullets">
+          <li>Full-Stack Development: Next.js, Node.js, MongoDB, PostgreSQL with real-world project-based curriculum</li>
+          <li>Linux Administration & System Management</li>
+          <li>Object-Oriented Programming with focus on design patterns and architecture</li>
+          <li>Digital Marketing Strategy & Campaign Management</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════ PROJECTS (GRID) ════════════════════════════════════ -->
+<section class="section" id="projects">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-eyebrow">SELECTED WORK</div>
+      <h2 class="section-title">Featured Projects</h2>
+    </div>
+    <div class="section-count">10</div>
+  </div>
+
+  <div class="projects-grid">
+    <a href="https://sgsuperfans.com" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-card-top">
+        <span class="project-num">_01</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3 class="project-name">SG Superfans</h3>
+      <p class="project-desc">Creator/fan monetization with live streaming, WebRTC video calling, reels, stories, and 3 payment gateways.</p>
+      <div class="project-stack">
+        <span>Node.js</span><span>WebRTC</span><span>Agora</span><span>Stripe</span>
+      </div>
+    </a>
+
+    <a href="https://juniordev.loopingbinary.com" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-card-top">
+        <span class="project-num">_02</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3 class="project-name">Junior Dev Platform</h3>
+      <p class="project-desc">Competitive developer training with coin economy, team formation, peer review, leaderboard.</p>
+      <div class="project-stack">
+        <span>Next.js</span><span>PostgreSQL</span><span>Flutterwave</span>
+      </div>
+    </a>
+
+    <a href="https://intellex.loopingbinary.com" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-card-top">
+        <span class="project-num">_03</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3 class="project-name">Intellex LMS</h3>
+      <p class="project-desc">Full LMS grown from 600+ member WhatsApp community—PDF invoices, mentorship tiers, early access.</p>
+      <div class="project-stack">
+        <span>Next.js</span><span>Supabase</span><span>Prisma</span>
+      </div>
+    </a>
+
+    <a href="https://shop.loopingbinary.com" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-card-top">
+        <span class="project-num">_04</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3 class="project-name">LB Tech Shop</h3>
+      <p class="project-desc">E-commerce with full SEO pipeline: JSON-LD, sitemap, bilingual targeting, Google Search Console.</p>
+      <div class="project-stack">
+        <span>Next.js</span><span>SEO</span><span>JSON-LD</span>
+      </div>
+    </a>
+
+    <a href="https://auth.loopingbinary.com" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-card-top">
+        <span class="project-num">_05</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3 class="project-name">LB Auth Server</h3>
+      <p class="project-desc">OAuth 2.0 with passwordless magic-code login, cross-subdomain sessions, "Sign in with LB" integration.</p>
+      <div class="project-stack">
+        <span>Next.js</span><span>PostgreSQL</span><span>OAuth 2.0</span>
+      </div>
+    </a>
+
+    <a href="https://loopingbinary.com" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-card-top">
+        <span class="project-num">_06</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <h3 class="project-name">Looping Binary</h3>
+      <p class="project-desc">Company website showcasing products, ecosystem platforms, and digital solutions for businesses.</p>
+      <div class="project-stack">
+        <span>Next.js</span><span>Brand</span><span>SEO</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════ SKILLS (ROTATING ORBIT) ════════════════════════════════════ -->
+<section class="section" id="skills">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-eyebrow">TECH ARSENAL</div>
+      <h2 class="section-title">Skills & Stack</h2>
+    </div>
+  </div>
+
+  <div class="skills-orbit-wrap reveal">
+    <div class="skills-orbit" id="skillsOrbit">
+      <!-- Frontend -->
+      <div class="skill-node" data-category="Frontend" data-skill="JavaScript">
+        <img src="skills/frontend/js.png" alt="JavaScript" />
+      </div>
+      <div class="skill-node" data-category="Frontend" data-skill="TypeScript">
+        <img src="skills/frontend/typescript.png" alt="TypeScript" />
+      </div>
+      <div class="skill-node" data-category="Frontend" data-skill="React">
+        <img src="skills/frontend/reactjs.png" alt="React" />
+      </div>
+      <div class="skill-node" data-category="Frontend" data-skill="Next.js">
+        <img src="skills/frontend/nextjs.png" alt="Next.js" />
+      </div>
+      
+      <!-- Backend -->
+      <div class="skill-node" data-category="Backend" data-skill="Node.js">
+        <img src="skills/backend/nodejs.png" alt="Node.js" />
+      </div>
+      <div class="skill-node" data-category="Backend" data-skill="Express">
+        <img src="skills/backend/expressjs.png" alt="Express" />
+      </div>
+      <div class="skill-node" data-category="Backend" data-skill="NestJS">
+        <img src="skills/backend/nestjs.png" alt="NestJS" />
+      </div>
+      <div class="skill-node" data-category="Backend" data-skill="Python">
+        <img src="skills/backend/python.png" alt="Python" />
+      </div>
+      
+      <!-- Databases -->
+      <div class="skill-node" data-category="Database" data-skill="PostgreSQL">
+        <img src="skills/backend/postgres.png" alt="PostgreSQL" />
+      </div>
+      <div class="skill-node" data-category="Database" data-skill="MongoDB">
+        <img src="skills/backend/mongodb.png" alt="MongoDB" />
+      </div>
+      <div class="skill-node" data-category="Database" data-skill="Firebase">
+        <img src="skills/backend/firebase.png" alt="Firebase" />
+      </div>
+      <div class="skill-node" data-category="Database" data-skill="Supabase">
+        <img src="skills/backend/supabase.png" alt="Supabase" />
+      </div>
+      
+      <!-- DevOps -->
+      <div class="skill-node" data-category="DevOps" data-skill="Docker">
+        <img src="skills/infra/docker.png" alt="Docker" />
+      </div>
+      <div class="skill-node" data-category="DevOps" data-skill="Kubernetes">
+        <img src="skills/infra/kubernates.png" alt="Kubernetes" />
+      </div>
+      <div class="skill-node" data-category="DevOps" data-skill="AWS S3">
+        <img src="skills/infra/s3.png" alt="AWS S3" />
+      </div>
+      <div class="skill-node" data-category="DevOps" data-skill="Linux">
+        <img src="skills/infra/linux.png" alt="Linux" />
+      </div>
+    </div>
+    
+    <div class="skills-center">
+      <div class="skill-info" id="skillInfo">
+        <span class="skill-cat" id="skillCat">Frontend</span>
+        <span class="skill-name" id="skillName">JavaScript</span>
+        <span class="skill-desc" id="skillDesc">Dynamic web interactivity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════ ABOUT ════════════════════════════════════ -->
+<section class="section" id="about">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-eyebrow">WHO I AM</div>
+      <h2 class="section-title">Background &amp; Story</h2>
+    </div>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-card reveal">
+      <img class="about-card-img" src="background/me.png" alt="Self-taught engineer" />
+      <h3>Self-Taught Engineer</h3>
+      <p>7+ years programming · 4 years professional · Deep learning through Udemy, Coursera, LinkedIn Learning, Amazon Technical Books.</p>
+    </div>
+    <div class="about-card reveal">
+      <img class="about-card-img" src="background/bulp.png" alt="Educator" />
+      <h3>Educator at 4 Institutions</h3>
+      <p>Full-stack development, Linux administration, OOP, Excel—taught at Seven Advanced Academy, Seven International University, Brains University, Saint Monica University.</p>
+    </div>
+    <div class="about-card reveal">
+      <img class="about-card-img" src="background/help.png" alt="Founder" />
+      <h3>Founder &amp; Entrepreneur</h3>
+      <p>Built Looping Binary from scratch — a software company with structured internship tracks across 6 disciplines serving users in Africa, Canada, and beyond.</p>
+    </div>
+    <div class="about-card reveal">
+      <img class="about-card-img" src="background/content.png" alt="Content creator" />
+      <h3>Content Creator</h3>
+      <p>Active on LinkedIn & TikTok · Built and scaled a 600+ learner tech community from a WhatsApp group to a structured LMS · English & French.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════ CONTACT ════════════════════════════════════ -->
+<section class="section contact-section" id="contact">
+  <div class="contact-inner reveal">
+    <p class="contact-prompt">Have a project in mind?</p>
+    <a href="mailto:tatohmodest@gmail.com" class="contact-email">tatohmodest@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://loopingbinary.com" target="_blank" rel="noopener">LoopingBinary.com</a>
+      <span>·</span>
+      <a href="https://github.com/tatohmodest" target="_blank" rel="noopener">GitHub</a>
+      <span>·</span>
+      <a href="https://www.linkedin.com/in/tatoh-modest-97036a212/" target="_blank" rel="noopener">LinkedIn</a>
+      <span>·</span>
+      <a href="https://www.tiktok.com/@modest_wilton" target="_blank" rel="noopener">TikTok</a>
+      <span>·</span>
+      <a href="https://wa.me/237650318856" target="_blank" rel="noopener">+237 650 318 856</a>
+    </div>
+    <p class="contact-availability">Open to international contracts & collaborations · English & French</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════ FOOTER ════════════════════════════════════ -->
+<footer class="footer">
+  <p>Design & built by <strong>Tatoh Modest Wilton</strong> · Looping Binary</p>
+  <p class="footer-location">Douala, Cameroon</p>
+</footer>
+
+<script src="script-new.js"></script>
+</body>
+</html>
