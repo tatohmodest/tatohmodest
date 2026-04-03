@@ -63,22 +63,25 @@
 })();
 
 // ── CUSTOM CURSOR ───────────────────────
+// Skip entirely on touch-only devices (no hover = no mouse)
 const cursor   = document.getElementById('cursor');
 const follower = document.getElementById('cursorFollower');
-let mx = window.innerWidth/2, my = window.innerHeight/2;
-let fx = mx, fy = my;
+if (window.matchMedia('(hover: hover)').matches) {
+  let mx = window.innerWidth/2, my = window.innerHeight/2;
+  let fx = mx, fy = my;
 
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animateCursor() {
-  cursor.style.left = mx + 'px';
-  cursor.style.top  = my + 'px';
-  fx += (mx - fx) * 0.1;
-  fy += (my - fy) * 0.1;
-  follower.style.left = fx + 'px';
-  follower.style.top  = fy + 'px';
-  requestAnimationFrame(animateCursor);
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+    fx += (mx - fx) * 0.1;
+    fy += (my - fy) * 0.1;
+    follower.style.left = fx + 'px';
+    follower.style.top  = fy + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
 }
-animateCursor();
 
 // ── HERO CANVAS — RAIN ──────────────────
 (function() {
@@ -113,7 +116,11 @@ animateCursor();
     for (let i = 0; i < 160; i++) drops.push(mkDrop(true));
   }
   resize();
-  window.addEventListener('resize', resize, { passive: true });
+  let _rainResizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(_rainResizeTimer);
+    _rainResizeTimer = setTimeout(resize, 200);
+  }, { passive: true });
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
@@ -304,7 +311,11 @@ document.querySelectorAll('[data-tilt]').forEach(el => {
 
   recalc();
   render();
-  window.addEventListener('resize', recalc, { passive: true });
+  let _orbitResizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(_orbitResizeTimer);
+    _orbitResizeTimer = setTimeout(recalc, 200);
+  }, { passive: true });
 
   scene.addEventListener('mousedown', e => {
     isDragging = true;
