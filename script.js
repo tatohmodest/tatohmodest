@@ -266,6 +266,13 @@ navMenu.querySelectorAll('a').forEach(a => {
     navToggle.setAttribute('aria-expanded', 'false');
   });
 });
+const navClose = document.getElementById('navClose');
+if (navClose) {
+  navClose.addEventListener('click', () => {
+    navMenu.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  });
+}
 
 // ---- INTERSECTION OBSERVER — SCROLL REVEAL ----
 let revealReady = false;
