@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0d0b;
+    --surface: #111714;
+    --surface2: #161d18;
+    --border: #1e2a22;
+    --green: #00d084;
+    --green2: #00e676;
+    --green-dim: rgba(0,208,132,0.12);
+    --green-dim2: rgba(0,208,132,0.06);
+    --text: #e8f0ea;
+    --text-muted: #7a9683;
+    --text-soft: #b8ccbe;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'Geist Mono', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .resume-actions {
+    max-width: 860px;
+    margin: 22px auto 0;
+    padding: 0 40px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .resume-btn {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-soft);
+    padding: 8px 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .resume-btn:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .resume-btn-primary {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-dim2);
+  }
+
+  .resume {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  /* ─── HEADER ─────────────────────────────────────── */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: start;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .name {
+    font-family: var(--serif);
+    font-size: 48px;
+    line-height: 1.05;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .name em {
+    color: var(--green);
+    font-style: italic;
+  }
+
+  .title-line {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .contact-block {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 6px;
+  }
+
+  .contact-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .contact-item a { color: var(--green); text-decoration: none; }
+  .contact-item a:hover { color: var(--green2); }
+
+  .dot { color: var(--green); }
+
+  /* ─── SUMMARY ─────────────────────────────────────── */
+  .summary {
+    background: var(--green-dim2);
+    border-left: 2px solid var(--green);
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .summary p {
+    font-size: 13.5px;
+    color: var(--text-soft);
+    line-height: 1.7;
+  }
+
+  .summary strong { color: var(--text); font-weight: 600; }
+
+  /* ─── SECTION ─────────────────────────────────────── */
+  .section { margin-bottom: 32px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: 11px;
+    font-style: italic;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── EXPERIENCE ─────────────────────────────────── */
+  .role {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 16px;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .role:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .role-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .role-org {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  .role-meta {
+    text-align: right;
+  }
+
+  .role-date {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .role-tag {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 9.5px;
+    font-family: var(--mono);
+    background: var(--green-dim);
+    color: var(--green);
+    padding: 2px 7px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .role-bullets {
+    margin-top: 8px;
+    grid-column: 1 / -1;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .role-bullets li {
+    font-size: 12.5px;
+    color: var(--text-soft);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.55;
+  }
+
+  .role-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-size: 10px;
+    top: 2px;
+  }
+
+  /* ─── PROJECTS ─────────────────────────────────── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+
+  .project-card:hover { border-color: var(--green); }
+
+  .project-name {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .project-url {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    margin-bottom: 8px;
+    display: block;
+    opacity: 0.8;
+  }
+
+  .project-desc {
+    font-size: 12px;
+    color: var(--text-soft);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── SKILLS ─────────────────────────────────────── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .skill-group-label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--green);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .skill-list {
+    font-size: 12px;
+    color: var(--text-soft);
+    line-height: 1.7;
+  }
+
+  /* ─── EDUCATION ─────────────────────────────────── */
+  .edu-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .edu-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 14px;
+  }
+
+  .edu-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .edu-sub {
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  /* ─── FOOTER STRIP ───────────────────────────────── */
+  .footer-strip {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .available-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+  }
+
+  .pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  @media (max-width: 640px) {
+    .resume-actions {
+      padding: 0 20px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .resume { padding: 24px 20px; }
+    .header { grid-template-columns: 1fr; }
+    .contact-block { text-align: left; }
+    .contact-item { justify-content: flex-start; }
+    .name { font-size: 36px; }
+    .projects-grid, .skills-grid, .edu-items { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    :root {
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface2: #ffffff;
+      --border: #d4dfd8;
+      --green: #0f7a52;
+      --green2: #0f7a52;
+      --green-dim: rgba(15,122,82,0.12);
+      --green-dim2: rgba(15,122,82,0.06);
+      --text: #111111;
+      --text-muted: #4f5d54;
+      --text-soft: #2e3a33;
+    }
+
+    body {
+      background: #ffffff;
+      color: #111111;
+      font-size: 11.5px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .resume-actions { display: none !important; }
+    .resume {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .project-card,
+    .edu-item,
+    .role,
+    .summary {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    a {
+      color: inherit !important;
+      text-decoration: none;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="resume-actions">
+  <a class="resume-btn" href="index.html">Back to Portfolio</a>
+  <a class="resume-btn resume-btn-primary" href="tataw_modest_resume.html?print=1">Download / Print Resume</a>
+</div>
+<div class="resume">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div>
+      <h1 class="name">Tatoh <em>Modest</em> Wilton</h1>
+      <p class="title-line">Full-Stack Engineer · Tech Entrepreneur · Educator · Creator</p>
+    </div>
+    <div class="contact-block">
+      <div class="contact-item"><span class="dot">◆</span> Douala, Cameroon</div>
+      <div class="contact-item"><span class="dot">◆</span> <a href="https://wa.me/237650318856">+237 650 318 856</a></div>
+      <div class="contact-item"><span class="dot">◆</span> <a href="mailto:tatohmodest@gmail.com">tatohmodest@gmail.com</a></div>
+      <div class="contact-item"><span class="dot">◆</span> <a href="https://loopingbinary.com">loopingbinary.com</a></div>
+      <div class="contact-item"><span class="dot">◆</span> <a href="https://github.com/tatohmodest">github.com/tatohmodest</a></div>
+      <div class="contact-item"><span class="dot">◆</span> <a href="https://www.linkedin.com/in/tatoh-modest-97036a212/">LinkedIn</a> · <a href="https://www.tiktok.com/@modest_wilton">TikTok</a></div>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <p>
+      Full-stack engineer and founder with <strong>4+ years of professional experience</strong> (7+ years overall exposure to programming and technology).
+      Founder of <strong>Looping Binary</strong>, a software company that builds scalable SaaS products, developer training programs, and digital infrastructure for businesses.
+      Proven ability to lead teams, deliver real-world software solutions, and train developers across multiple institutions.
+      International client experience across Africa and Canada.
+    </p>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Experience</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="role">
+      <div>
+        <div class="role-title">Founder & CEO</div>
+        <div class="role-org">Looping Binary · Douala, Cameroon</div>
+      </div>
+      <div class="role-meta">
+        <div class="role-date">2023 – Present</div>
+        <span class="role-tag">FULL-TIME</span>
+      </div>
+      <ul class="role-bullets">
+        <li>Founded and lead a software company that builds scalable digital platforms , SaaS products, e-commerce, LMS, and developer tooling , for businesses locally and internationally</li>
+        <li>Architected the full Looping Binary ecosystem: centralized auth service, coin/rewards API, Junior Dev tournament platform, Intellex LMS, LB Tech Shop, and internship management portal</li>
+        <li>Designed and implemented SEO pipelines (Next.js generateMetadata, JSON-LD, sitemap.ts, Google Search Console) and bilingual content strategies targeting Cameroonian markets</li>
+        <li>Launched structured internship tracks across 6 disciplines: Software Dev, UI/UX, Data & AI, Digital Marketing, Business, and Content Creation</li>
+        <li>Grew Intellex from a 600+ member WhatsApp learning community into a structured LMS with early access subscription and mentorship tiers</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div>
+        <div class="role-title">Lead Backend Developer &amp; Software Engineer</div>
+        <div class="role-org">SG Superfans · Canada (Remote)</div>
+      </div>
+      <div class="role-meta">
+        <div class="role-date">Contract</div>
+        <span class="role-tag">CONTRACT</span>
+      </div>
+      <ul class="role-bullets">
+        <li>Led backend development for a full-scale social and content monetization platform</li>
+        <li>Built backend systems for <strong>live streaming and real-time video communication</strong></li>
+        <li>Implemented <strong>video/audio calling and real-time messaging</strong> using WebSockets and WebRTC</li>
+        <li>Developed <strong>content monetization features</strong> including paid content and subscription models</li>
+        <li>Engineered <strong>social media features</strong>: reels, stories, playlists, and user following</li>
+        <li>Integrated <strong>multiple payment gateways</strong>: PayUnit, Stripe, and PayPal</li>
+        <li>Designed systems for user engagement, content delivery, and platform scalability</li>
+        <li><em>Stack:</em> Node.js, Next.js API Routes, Express, WebSockets, REST APIs, Payment APIs, Media Streaming</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div>
+        <div class="role-title">Digital Marketing Manager</div>
+        <div class="role-org">Saint Monica University</div>
+      </div>
+      <div class="role-meta">
+        <div class="role-date">2024 – 2025</div>
+        <span class="role-tag">CONTRACT</span>
+      </div>
+      <ul class="role-bullets">
+        <li>Managed digital campaigns, branding strategy, and student engagement initiatives across digital channels</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div>
+        <div class="role-title">Lead Backend Developer</div>
+        <div class="role-org">Presto , Business Management Platform · Remote</div>
+      </div>
+      <div class="role-meta">
+        <div class="role-date">Contract</div>
+        <span class="role-tag">CONTRACT</span>
+      </div>
+      <ul class="role-bullets">
+        <li>Led backend development for a comprehensive business management platform</li>
+        <li>Developed systems enabling businesses to register, onboard, and manage operations</li>
+        <li>Built features for product and service creation and management</li>
+        <li>Implemented <strong>event management systems</strong> for business activities and scheduling</li>
+        <li>Designed <strong>staff management and role-based access controls</strong></li>
+        <li>Contributed to the <strong>Flutter mobile app</strong> by integrating backend services and APIs</li>
+        <li><em>Stack:</em> Node.js, Express, Next.js API Routes, REST APIs, MongoDB/PostgreSQL, Flutter (integration)</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div>
+        <div class="role-title">Full-Stack Development Instructor</div>
+        <div class="role-org">Seven Advanced Academy</div>
+      </div>
+      <div class="role-meta">
+        <div class="role-date">2023 – Present</div>
+        <span class="role-tag">TEACHING</span>
+      </div>
+      <ul class="role-bullets">
+        <li>Teach full-stack development with Next.js, Node.js, MongoDB/Mongoose, and PostgreSQL using real-world project-based curriculum</li>
+        <li>Mentor junior developers through structured programs including the Junior Dev Tournament (competitive coding with team formation, peer review, and coin rewards)</li>
+        <li>Also delivers Excel data analysis instruction covering data cleaning, pivot tables, and dashboard design</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div>
+        <div class="role-title">Linux Administration Tutor</div>
+        <div class="role-org">Seven International University</div>
+      </div>
+      <div class="role-meta">
+        <div class="role-date">2025 – Present</div>
+        <span class="role-tag">TEACHING</span>
+      </div>
+      <ul class="role-bullets">
+        <li>Teach Linux system administration and practical server management to university-level students</li>
+      </ul>
+    </div>
+
+    <div class="role">
+      <div>
+        <div class="role-title">OOP Instructor</div>
+        <div class="role-org">Brains University</div>
+      </div>
+      <div class="role-meta">
+        <div class="role-date">2025</div>
+        <span class="role-tag">TEACHING</span>
+      </div>
+      <ul class="role-bullets">
+        <li>Delivered Object-Oriented Programming curriculum with emphasis on applied design patterns and real-world architecture</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Selected Projects</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-name">SG Superfans</div>
+        <span class="project-url">sgssuperfans.com</span>
+        <div class="project-desc">Social &amp; content monetization platform , live streaming, real-time video/audio calling, reels, stories, playlists, paid subscriptions, and PayUnit/Stripe/PayPal payment integration.</div>
+        <div class="project-tags">
+          <span class="tag">Node.js</span><span class="tag">WebSockets</span><span class="tag">WebRTC</span><span class="tag">Stripe</span><span class="tag">PayPal</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-name">Junior Dev Platform</div>
+        <span class="project-url">juniordev.loopingbinary.com</span>
+        <div class="project-desc">Competitive developer training platform with coin economy, team formation, tier-based pricing, peer review system, leaderboard, and Flutterwave payments. Season 2 live.</div>
+        <div class="project-tags">
+          <span class="tag">Next.js</span><span class="tag">PostgreSQL</span><span class="tag">Flutterwave</span><span class="tag">SQL (13 tables)</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-name">Intellex LMS</div>
+        <span class="project-url">intellex.loopingbinary.com</span>
+        <div class="project-desc">Large-scale learning platform grown from a 600+ member WhatsApp community. Features early access registration, PDF invoice generation, curriculum guides, and mentorship tiers.</div>
+        <div class="project-tags">
+          <span class="tag">Next.js</span><span class="tag">Supabase</span><span class="tag">Drizzle ORM</span><span class="tag">PDF Gen</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-name">LB Tech Shop</div>
+        <span class="project-url">shop.loopingbinary.com</span>
+        <div class="project-desc">E-commerce platform for tech products with full SEO implementation: generateMetadata, sitemap.ts, JSON-LD structured data, Google Search Console integration, bilingual targeting.</div>
+        <div class="project-tags">
+          <span class="tag">Next.js</span><span class="tag">SEO</span><span class="tag">JSON-LD</span><span class="tag">GSC</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-name">Presto</div>
+        <span class="project-url">Business Management Platform</span>
+        <div class="project-desc">Multi-feature business platform: onboarding, product/service management, event scheduling, staff management, role-based access controls, and Flutter mobile app backend integration.</div>
+        <div class="project-tags">
+          <span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">MongoDB</span><span class="tag">PostgreSQL</span><span class="tag">Flutter</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Technical Skills</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-label">Languages & Frameworks</div>
+        <div class="skill-list">JavaScript · TypeScript<br>Node.js · Express · Next.js<br>Python · React</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Databases & Backend</div>
+        <div class="skill-list">MongoDB · PostgreSQL<br>Supabase · Drizzle ORM<br>Mongoose · REST APIs</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Infra & Tools</div>
+        <div class="skill-list">Docker · Kubernetes<br>Git · GitHub · AWS S3<br>Linux · Nginx</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Payments & Integrations</div>
+        <div class="skill-list">Flutterwave · WebRTC<br>Agora · 100ms<br>Google Search Console</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Frontend & Design</div>
+        <div class="skill-list">Tailwind CSS · UI/UX<br>SEO (Next.js) · JSON-LD<br>React Three Fiber</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Learning & AI</div>
+        <div class="skill-list">LangChain · AI Systems<br>Cybersecurity (active)<br>Data Analysis · Excel</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Education & Development</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="edu-items">
+      <div class="edu-item">
+        <div class="edu-title">Self-Taught Engineer</div>
+        <div class="edu-sub">7+ years of programming · 4.5 years professional · Udemy · Coursera · LinkedIn Learning · Amazon Technical Books</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-title">Content Creator & Educator</div>
+        <div class="edu-sub">Active on LinkedIn & TikTok · Teaches developers across 4 institutions · Built & scaled a 600+ learner tech community from scratch</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer-strip">
+    <span class="footer-note">References available on request · English & French</span>
+    <div class="available-badge">
+      <div class="pulse"></div>
+      Open to international contracts & collaborations
+    </div>
+  </div>
+
+</div>
+<script>
+  (function initResumePrintMode() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('print') !== '1') return;
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        window.print();
+      }, 280);
+    });
+  })();
+</script>
+</body>
+</html>
