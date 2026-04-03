@@ -92,7 +92,7 @@ if (window.matchMedia('(hover: hover)').matches) {
 
   function mkParticle(spreadY) {
     const radius  = Math.random() * 1.4 + 0.3;
-    const speed   = Math.random() * 0.7 + 0.25;  // gentle but visible fall
+    const speed   = Math.random() * 0.45 + 0.12;  // gentle but visible fall
     const twinkleSpeed = Math.random() * 0.012 + 0.004;
     return {
       x:       Math.random() * (W || 1400),
@@ -101,7 +101,7 @@ if (window.matchMedia('(hover: hover)').matches) {
       speed,
       dx:      (Math.random() - 0.5) * 0.18,      // gentle side drift
       dy:      speed,
-      opacity: Math.random() * 0.30 + 0.08,
+      opacity: Math.random() * 0.20 + 0.05,
       // twinkling
       phase:   Math.random() * Math.PI * 2,
       twinkleSpeed,

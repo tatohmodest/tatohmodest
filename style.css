@@ -100,7 +100,7 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
   border-color:var(--border);
 }
 .nav-logo{
-  display:flex;align-items:center;font-weight:700;
+  display:flex;align-items:center;font-weight:800;
 }
 .nav-logo-img{
   height:36px;
@@ -207,7 +207,7 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
 .btn-outline:hover{color:var(--accent);border-color:var(--accent)}
 
 /* Hero photo */
-.hero-right{position:relative;flex-shrink:0;overflow:clip}
+.hero-right{position:relative;flex-shrink:0;overflow:visible}
 .hero-photo-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:.75rem}
 .hero-photo-frame{
   width:clamp(200px,22vw,300px);
@@ -283,7 +283,10 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
 .sp-num{font-family:var(--font-d);font-size:1.6rem;font-weight:700;color:var(--accent);line-height:1}
 .sp-lbl{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@media(max-width:1000px){.stat-pill{display:none}}
+@media(max-width:1000px){
+  .stat-pill--tl{top:-48px;left:0;right:auto}
+  .stat-pill--br{bottom:-48px;right:0;left:auto}
+}
 
 .scroll-hint{
   position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
@@ -652,9 +655,6 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
   body{cursor:auto;overflow-x:hidden}
   button{cursor:pointer}
 
-  /* Stat pills — bleed outside at left:-70px / right:-60px */
-  .stat-pill{display:none!important}
-
   /* Orbit rings: rotate + translate combo on wide circles */
   .orbit-ring{animation:none!important}
 
@@ -664,7 +664,7 @@ body:has(button:hover) .cursor-follower{ width:60px;height:60px;opacity:.5; }
   /* Hard-contain every section that has animated children */
   #hero{overflow:hidden;contain:paint}
   .hero-inner{overflow:hidden}
-  .hero-right{overflow:hidden}
+  .hero-right{overflow:visible}
   .orbit-scene{overflow:hidden;contain:paint}
   .ticker-wrap{contain:layout paint}
   .impact-section{contain:paint}
